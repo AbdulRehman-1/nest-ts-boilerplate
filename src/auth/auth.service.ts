@@ -18,6 +18,7 @@ export default class AuthService {
   async signIn(signInDto: SignInDto) {
     const { email, password } = signInDto;
     const user = await this.usersService.findByEmail(email);
+    console.log("user ==", user);
     if (!user) {
       throw new NotFoundException("Invalid username or password");
     }

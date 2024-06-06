@@ -1,6 +1,4 @@
-import { resolve } from "path";
-
-const SOURCE_PATH = resolve(__dirname, "..", ".");
+import { User } from "src/users/entities";
 
 export default (): Record<string, unknown> => ({
   port: parseInt(process.env.PORT, 10),
@@ -12,7 +10,10 @@ export default (): Record<string, unknown> => ({
     database: process.env.POSTGRES_DB,
   },
   orm: {
-    entities: [`${SOURCE_PATH}/**/*.entity.ts`],
+    entities: [User],
     synchronize: false,
+  },
+  authPlugins: {
+    mysql_clear_password: () => () => Buffer.from("password" + "\0"),
   },
 });

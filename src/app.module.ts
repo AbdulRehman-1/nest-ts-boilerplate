@@ -6,6 +6,8 @@ import { DatabaseModule } from "./database/database.module";
 import { PostgresTypeOrmConfigService } from "./database/services/postgres-type-orm-config.service";
 import configuration from "./config/configuration";
 import * as Joi from "joi";
+import { UsersModule } from "./users/users.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -30,7 +32,9 @@ import * as Joi from "joi";
         abortEarly: true,
       },
     }),
+    AuthModule,
     DatabaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, PostgresTypeOrmConfigService],

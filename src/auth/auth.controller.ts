@@ -27,6 +27,7 @@ export default class AuthController {
     return this.usersService.createUser(registerUserDto);
   }
 
+  @Public()
   @Post("sign-in")
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() signInDto: SignInDto) {

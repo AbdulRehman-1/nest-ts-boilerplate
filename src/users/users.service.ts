@@ -48,7 +48,7 @@ export default class UsersService {
     searchStr: string = null,
     page = 1,
     pageSize = 10,
-    user: User
+    reqUser: User
   ): Promise<{
     users: User[];
     totalCount: number;
@@ -104,40 +104,43 @@ export default class UsersService {
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
     const { firstName, lastName, email, password } = updateUserDto;
     const user = await this.findOne(id);
+
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    if (email) {
-      const already = await this.userRepository.findOne({
-        where: {
-          email,
-          id: Not(id),
-        },
+    let accessToken = null;
+    if (email && email !== user.email) {
+      const existingUser = await this.userRepository.findOne({
+        where: { email, id: Not(id) },
       });
-      if (already) throw new ConflictException("User already exists");
+      if (existingUser) {
+        throw new ConflictException("User already exists");
+      }
+      const payload = { sub: user.id, username: email };
+      accessToken = await this.jwtService.signAsync(payload);
     }
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.email = email;
-    if (Object.keys(updateUserDto).includes("password")) {
-      if (password.length === 0)
+
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.email = email || user.email;
+
+    if (password !== undefined) {
+      if (password.length === 0) {
         throw new ForbiddenException("Password can't be empty");
+      }
       const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(password, salt);
-      user.password = hashedPassword;
+      user.password = await bcrypt.hash(password, salt);
     }
-    const updateUser = await this.userRepository.save(user);
-    if (updateUser) {
-      const payload = { sub: user.id, username: user.email };
-      const accessToken = await this.jwtService.signAsync(payload);
-      return {
-        message: "User updated",
-        user: {
-          ...updateUser,
-          accessToken,
-        },
-      };
-    }
+
+    const updatedUser = await this.userRepository.save(user);
+
+    return {
+      message: "User updated",
+      user: {
+        ...updatedUser,
+        ...(accessToken && { accessToken }),
+      },
+    };
   }
 
   async resetPasswordRequest(token: string, user: User) {

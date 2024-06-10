@@ -12,8 +12,7 @@ import {
 } from "@nestjs/common";
 import UserService from "./users.service";
 import { CreateUserDto, ExistingUserDto, UpdateUserDto } from "./dto";
-import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
-import { LocalAuthGuard } from "src/auth/guards/local-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
 @Controller("users")
 export default class UserController {

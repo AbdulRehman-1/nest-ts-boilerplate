@@ -25,7 +25,7 @@ export default class AuthService {
     const passwordIsValid = await user.validatePassword(password);
     if (!passwordIsValid) {
       throw new UnauthorizedException("Invalid password");
-    }
+    } 
 
     const payload = { sub: user.id, username: user.email };
     const accessToken = await this.jwtService.signAsync(payload);

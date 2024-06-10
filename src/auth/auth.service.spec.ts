@@ -15,14 +15,6 @@ describe("AuthService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        // {
-        //   provide: AuthService,
-        //   useValue: {
-        //     signIn: jest.fn(),
-        //     resetPasswordRequest: jest.fn(),
-        //     resetPassword: jest.fn(),
-        //   },
-        // },
         {
           provide: UsersService,
           useValue: {
@@ -73,7 +65,6 @@ describe("AuthService", () => {
       const result = await authService.signIn(signInDto);
       expect(result.user).toBeDefined();
       expect(result.access_token).toBeDefined();
-      console.log(result); // Debugging step to check the structure of the result
       expect(await authService.signIn(signInDto)).toBeDefined();
       expect(usersService.findByEmail).toHaveBeenCalledWith(signInDto.email);
       expect(user.validatePassword).toHaveBeenCalledWith(signInDto.password);
@@ -108,7 +99,7 @@ describe("AuthService", () => {
         lastName: "Last",
         resetToken: null,
         resetTokenExpiration: null,
-        validatePassword: jest.fn().mockResolvedValue(true),
+        validatePassword: jest.fn().mockResolvedValue(false),
         password: "1password123",
       };
 

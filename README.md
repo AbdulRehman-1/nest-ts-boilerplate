@@ -87,8 +87,9 @@ $ yarn run test:cov
 ## Migration
 
 ```bash
-# run all migerations
-$ npm run migration:run
+# create a new migration
+$ npm run migration:create --name=user
+
 ```
 
 ## Usage
@@ -107,8 +108,8 @@ export class CreateUserTable1708520285550 implements MigrationInterface {
 ```
 
 ```bash
-# create a new migration
-$ npm run migration:create --name=user
+# run all migerations
+$ npm run migration:run
 
 # revert migration
 $ npm run migration:revert

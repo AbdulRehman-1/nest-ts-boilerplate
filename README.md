@@ -1,8 +1,6 @@
-
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
 
 ### Features Implemented
 
@@ -31,24 +29,24 @@ Ensure you have the following installed:
 
 1. Clone the repository:
 
-    ```bash
-    git clone https://github.com/abdulrehman-11/nest-ts-boilerplate.git
-    cd nest-ts-boilerplate
-    ```
+   ```bash
+   git clone https://github.com/abdulrehman-11/nest-ts-boilerplate.git
+   cd nest-ts-boilerplate
+   ```
 
 2. Install the dependencies:
 
-    ```bash
-    npm install
-    yarn
-    ```
+   ```bash
+   npm install
+   yarn
+   ```
 
 3. Set up your environment variables. Create a `.env` file in the root directory and add the following variables:
 
-    ```plaintext
-    JWT_SECRET=your_jwt_secret_key
-    JWT_EXPIRATION_TIME=3600s
-    ```
+   ```plaintext
+   JWT_SECRET=your_jwt_secret_key
+   JWT_EXPIRATION_TIME=3600s
+   ```
 
 <!-- ## Installation
 
@@ -85,15 +83,13 @@ $ yarn run test:e2e
 $ yarn run test:cov
 
 ```
+
 ## Migration
 
 ```bash
 # run all migerations
 $ npm run migration:run
-
-# create a new migration
-$ "npm run migration:create --name=user"
-
+```
 ## Usage
 In migrations folder 1708520285550-user.ts
 
@@ -106,6 +102,11 @@ export class CreateUserTable1708520285550 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
   }
 }
+```
+
+```bash
+# create a new migration
+$ "npm run migration:create --name=user"
 
 # revert migration
 $ npm run migration:revert
@@ -113,16 +114,18 @@ $ npm run migration:revert
 #drop migration
 $ npm run migration:drop
 ```
-```
-## Seed
+
+
+## JwtStrategy
 
 ```bash
 # run all the seeders
 $ yarn run seed
 
-```
+````
 
 ## JwtStrategy
+
 Authenticate the user with jwt strategy
 
 ## Usage
@@ -158,6 +161,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 ```
 
 ## Jwt AuthGuard
+
 Jwt AuthGuard implements the Jwt Strategy.
 
 ```bash
@@ -181,6 +185,7 @@ export default class UserController {
 ```
 
 ## Local AuthGuard
+
 This AuthGuard implements the Local Strategy for authenticating users from the database.
 
 ```bash
@@ -202,4 +207,3 @@ export default class UserController {
 }
 
 ```
-

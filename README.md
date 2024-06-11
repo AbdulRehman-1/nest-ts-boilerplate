@@ -74,7 +74,7 @@ $ yarn run start:prod
 $ yarn run test
 
 # unit tests single file
-$ "yarn run test <filename.ts>"
+$ yarn run test <filename.ts>
 
 # e2e tests
 $ yarn run test:e2e

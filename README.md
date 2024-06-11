@@ -90,7 +90,9 @@ $ yarn run test:cov
 # run all migerations
 $ npm run migration:run
 ```
+
 ## Usage
+
 In migrations folder 1708520285550-user.ts
 
 ```bash
@@ -115,14 +117,13 @@ $ npm run migration:revert
 $ npm run migration:drop
 ```
 
-
-## JwtStrategy
+## Seed
 
 ```bash
 # run all the seeders
 $ yarn run seed
 
-````
+```
 
 ## JwtStrategy
 

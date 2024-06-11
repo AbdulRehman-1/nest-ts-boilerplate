@@ -108,7 +108,7 @@ export class CreateUserTable1708520285550 implements MigrationInterface {
 
 ```bash
 # create a new migration
-$ "npm run migration:create --name=user"
+$ npm run migration:create --name=user
 
 # revert migration
 $ npm run migration:revert

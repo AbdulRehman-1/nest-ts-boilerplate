@@ -4,27 +4,28 @@ import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { MoreThan, Not, Repository } from "typeorm";
-import { CreateUserDto, UpdateUserDto } from "./dto";
-import User from "./entities/users.entity";
-import * as bcrypt from "bcrypt";
-import { Exception } from "handlebars";
-import { JwtService } from "@nestjs/jwt";
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MoreThan, Not, Repository } from 'typeorm';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import User from './entities/users.entity';
+import * as bcrypt from 'bcrypt';
+import { Exception } from 'handlebars';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export default class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
   async createUser(createUserDto: CreateUserDto) {
     const { firstName, lastName, email, password } = createUserDto;
 
     const alreadyUser = await this.findByEmail(email);
     if (alreadyUser) {
-      throw new ConflictException("User already exist");
+      throw new ConflictException('User already exist');
     }
 
     const user: User = new User();
@@ -37,41 +38,41 @@ export default class UsersService {
     const accessToken = await this.jwtService.signAsync(payload);
     user.password = hashedPassword;
     const response = await this.userRepository.save(user);
-    if (!response) throw new Exception("User not created");
+    if (!response) throw new Exception('User not created');
 
-    delete user["password"];
+    delete user['password'];
 
-    return { user, message: "User Created", access_token: accessToken };
+    return { user, message: 'User Created', access_token: accessToken };
   }
 
   async findAllUser(
     searchStr: string = null,
     page = 1,
     pageSize = 10,
-    reqUser: User
+    reqUser: User,
   ): Promise<{
     users: User[];
     totalCount: number;
     currentPage: number;
     totalPages: number;
   }> {
-    const queryBuilder = this.userRepository.createQueryBuilder("user");
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
     const query = queryBuilder.select([
-      "user.id",
-      "user.firstName",
-      "user.lastName",
-      "user.email",
+      'user.id',
+      'user.firstName',
+      'user.lastName',
+      'user.email',
     ]);
 
     if (searchStr) {
       query.where((qb) => {
-        qb.orWhere("LOWER(user.firstName) LIKE LOWER(:search)", {
+        qb.orWhere('LOWER(user.firstName) LIKE LOWER(:search)', {
           search: `%${searchStr}%`,
         })
-          .orWhere("LOWER(user.lastName) LIKE LOWER(:search)", {
+          .orWhere('LOWER(user.lastName) LIKE LOWER(:search)', {
             search: `%${searchStr}%`,
           })
-          .orWhere("LOWER(user.email) LIKE LOWER(:search)", {
+          .orWhere('LOWER(user.email) LIKE LOWER(:search)', {
             search: `%${searchStr}%`,
           });
       });
@@ -97,7 +98,7 @@ export default class UsersService {
       where: {
         id,
       },
-      select: ["id", "firstName", "lastName", "email"],
+      select: ['id', 'firstName', 'lastName', 'email'],
     });
   }
 
@@ -106,7 +107,7 @@ export default class UsersService {
     const user = await this.findOne(id);
 
     if (!user) {
-      throw new NotFoundException("User not found");
+      throw new NotFoundException('User not found');
     }
     let accessToken = null;
     if (email && email !== user.email) {
@@ -114,7 +115,7 @@ export default class UsersService {
         where: { email, id: Not(id) },
       });
       if (existingUser) {
-        throw new ConflictException("User already exists");
+        throw new ConflictException('User already exists');
       }
       const payload = { sub: user.id, username: email };
       accessToken = await this.jwtService.signAsync(payload);
@@ -135,7 +136,7 @@ export default class UsersService {
     const updatedUser = await this.userRepository.save(user);
 
     return {
-      message: "User updated",
+      message: 'User updated',
       user: {
         ...updatedUser,
         ...(accessToken && { accessToken }),
@@ -154,7 +155,7 @@ export default class UsersService {
   async resetPassword(token: string, password: string) {
     const user = await this.findByToken(token);
     if (!user)
-      throw new UnauthorizedException("Password reset token is invalid!");
+      throw new UnauthorizedException('Password reset token is invalid!');
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     user.password = hashedPassword;
@@ -166,12 +167,12 @@ export default class UsersService {
   async removeUser(id: number) {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException("User not found");
+      throw new NotFoundException('User not found');
     }
     const deleteduser = await this.userRepository.delete(id);
     if (deleteduser) {
       return {
-        message: "User deleted",
+        message: 'User deleted',
       };
     }
   }

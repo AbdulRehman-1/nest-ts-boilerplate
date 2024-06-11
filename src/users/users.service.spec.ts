@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException, NotFoundException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -59,11 +64,14 @@ describe('UsersService', () => {
 
       jest.spyOn(service, 'findByEmail').mockResolvedValue(null);
       jest.spyOn(jwtService, 'signAsync').mockResolvedValue('token');
-      mockUserRepository.save.mockResolvedValue({ ...createUserDto, id: 1 });
+      mockUserRepository.save.mockResolvedValue({
+        ...createUserDto,
+        id: 1,
+      });
 
       const result = await service.createUser(createUserDto);
 
-      expect(result).toBeTruthy()
+      expect(result).toBeTruthy();
     });
 
     it('should throw a ConflictException if user already exists', async () => {
@@ -74,16 +82,25 @@ describe('UsersService', () => {
         password: 'password',
       };
 
-      jest.spyOn(service, 'findByEmail').mockResolvedValue(createUserDto as any);
+      jest
+        .spyOn(service, 'findByEmail')
+        .mockResolvedValue(createUserDto as any);
 
-      await expect(service.createUser(createUserDto)).rejects.toThrow(ConflictException);
+      await expect(service.createUser(createUserDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 
   describe('findAllUser', () => {
     it('should return paginated users', async () => {
       const users: User[] = [
-        { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as User,
+        {
+          id: 1,
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+        } as User,
       ];
 
       mockUserRepository.createQueryBuilder.mockReturnValue({
@@ -108,7 +125,12 @@ describe('UsersService', () => {
 
   describe('findOne', () => {
     it('should return a user if found', async () => {
-      const user: User = { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as User;
+      const user: User = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      } as User;
 
       mockUserRepository.findOne.mockResolvedValue(user);
 
@@ -127,10 +149,18 @@ describe('UsersService', () => {
   describe('updateUser', () => {
     it('should update a user and return the updated user', async () => {
       const updateUserDto: UpdateUserDto = { firstName: 'Jane' };
-      const user: User = { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as User;
+      const user: User = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      } as User;
 
       jest.spyOn(service, 'findOne').mockResolvedValue(user);
-      mockUserRepository.save.mockResolvedValue({ ...user, ...updateUserDto });
+      mockUserRepository.save.mockResolvedValue({
+        ...user,
+        ...updateUserDto,
+      });
 
       const result = await service.updateUser(1, updateUserDto);
 
@@ -143,54 +173,84 @@ describe('UsersService', () => {
     it('should throw a NotFoundException if user is not found', async () => {
       jest.spyOn(service, 'findOne').mockResolvedValue(null);
 
-      await expect(service.updateUser(1, {})).rejects.toThrow(NotFoundException);
+      await expect(service.updateUser(1, {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw a ConflictException if email is already taken', async () => {
       const updateUserDto: UpdateUserDto = { email: 'jane@example.com' };
-      const user: User = { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as User;
+      const user: User = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      } as User;
 
       jest.spyOn(service, 'findOne').mockResolvedValue(user);
       mockUserRepository.findOne.mockResolvedValue({ ...user, id: 2 });
 
-      await expect(service.updateUser(1, updateUserDto)).rejects.toThrow(ConflictException);
+      await expect(service.updateUser(1, updateUserDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('should throw a ForbiddenException if password is empty', async () => {
       const updateUserDto: UpdateUserDto = { password: '' };
-      const user: User = { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as User;
+      const user: User = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      } as User;
 
       jest.spyOn(service, 'findOne').mockResolvedValue(user);
 
-      await expect(service.updateUser(1, updateUserDto)).rejects.toThrow(ForbiddenException);
+      await expect(service.updateUser(1, updateUserDto)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 
-  
-
-
   describe('resetPassword', () => {
     it('should reset the password if token is valid', async () => {
-      const user: User = { id: 1, password: 'oldPassword', resetToken: 'validToken' } as User;
-  
+      const user: User = {
+        id: 1,
+        password: 'oldPassword',
+        resetToken: 'validToken',
+      } as User;
+
       jest.spyOn(service, 'findByToken').mockResolvedValue(user);
-      mockUserRepository.save.mockResolvedValue({ ...user, password: 'newHashedPassword' });
-  
-      const result = await service.resetPassword('validToken', 'newPassword');
-  
+      mockUserRepository.save.mockResolvedValue({
+        ...user,
+        password: 'newHashedPassword',
+      });
+
+      const result = await service.resetPassword(
+        'validToken',
+        'newPassword',
+      );
+
       expect(result).toBeDefined();
     });
-  
+
     it('should throw an UnauthorizedException if token is invalid', async () => {
       jest.spyOn(service, 'findByToken').mockResolvedValue(null);
-  
-      await expect(service.resetPassword('invalidToken', 'newPassword')).rejects.toThrow(UnauthorizedException);
+
+      await expect(
+        service.resetPassword('invalidToken', 'newPassword'),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('removeUser', () => {
     it('should delete a user if found', async () => {
-      const user: User = { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as User;
+      const user: User = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      } as User;
 
       jest.spyOn(service, 'findOne').mockResolvedValue(user);
       mockUserRepository.delete.mockResolvedValue({ affected: 1 });
@@ -203,7 +263,9 @@ describe('UsersService', () => {
     it('should throw a NotFoundException if user is not found', async () => {
       jest.spyOn(service, 'findOne').mockResolvedValue(null);
 
-      await expect(service.removeUser(1)).rejects.toThrow(NotFoundException);
+      await expect(service.removeUser(1)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

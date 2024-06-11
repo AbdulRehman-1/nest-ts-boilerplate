@@ -1,15 +1,15 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Seeder } from "nestjs-seeder";
-import { Repository } from "typeorm";
-import userData from "../seeders/data/user.data.json";
-import User from "src/users/entities/users.entity";
-import * as bcrypt from "bcrypt";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Seeder } from 'nestjs-seeder';
+import { Repository } from 'typeorm';
+import userData from '../seeders/data/user.data.json';
+import User from 'src/users/entities/users.entity';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserSeed implements Seeder {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async seed(): Promise<any> {
@@ -30,7 +30,7 @@ export class UserSeed implements Seeder {
     try {
       await this.userRepository.query(`DELETE FROM pickup_location`);
     } catch (e) {
-      console.error("error seeding db : ", e);
+      console.error('error seeding db : ', e);
     }
   }
 }

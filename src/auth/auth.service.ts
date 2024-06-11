@@ -18,7 +18,6 @@ export default class AuthService {
   async signIn(signInDto: SignInDto) {
     const { email, password } = signInDto;
     const user = await this.usersService.findByEmail(email);
-    console.log("user ==", user);
     if (!user) {
       throw new NotFoundException("Invalid username or password");
     }
@@ -52,7 +51,6 @@ export default class AuthService {
   async resetPassword(
     resetPasswordDto: ResetPasswordDto,
     token: string,
-    userType: string
   ) {
     const { password, confirmPassword } = resetPasswordDto;
     if (password !== confirmPassword) {

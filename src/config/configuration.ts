@@ -1,4 +1,4 @@
-import { User } from "src/users/entities";
+import { User } from 'src/users/entities';
 
 export default (): Record<string, unknown> => ({
   port: parseInt(process.env.PORT, 10),
@@ -14,6 +14,6 @@ export default (): Record<string, unknown> => ({
     synchronize: false,
   },
   authPlugins: {
-    mysql_clear_password: () => () => Buffer.from("password" + "\0"),
+    mysql_clear_password: () => () => Buffer.from('password' + '\0'),
   },
 });

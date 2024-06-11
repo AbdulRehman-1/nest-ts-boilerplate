@@ -12,10 +12,25 @@ describe('UserController', () => {
   const mockUserService = {
     createUser: jest.fn((dto) => ({ id: 1, ...dto })),
     findAllUser: jest.fn((searchStr, page, pageSize, user) => [
-      { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
-      { id: 2, firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com' },
+      {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      },
+      {
+        id: 2,
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane@example.com',
+      },
     ]),
-    findOne: jest.fn((id) => ({ id, firstName: 'John', lastName: 'Doe', email: 'john@example.com' })),
+    findOne: jest.fn((id) => ({
+      id,
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+    })),
     updateUser: jest.fn((id, dto) => ({ id, ...dto })),
     removeUser: jest.fn((id) => ({ id })),
   };
@@ -67,17 +82,37 @@ describe('UserController', () => {
       const req = { user: { id: 1 } };
       const result = await controller.findAll(req, 'Doe', 1, 10);
       expect(result).toEqual([
-        { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
-        { id: 2, firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com' },
+        {
+          id: 1,
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+        },
+        {
+          id: 2,
+          firstName: 'Jane',
+          lastName: 'Doe',
+          email: 'jane@example.com',
+        },
       ]);
-      expect(service.findAllUser).toHaveBeenCalledWith('Doe', 1, 10, req.user);
+      expect(service.findAllUser).toHaveBeenCalledWith(
+        'Doe',
+        1,
+        10,
+        req.user,
+      );
     });
   });
 
   describe('findOne', () => {
     it('should return a single user', async () => {
       const result = await controller.findOne('1');
-      expect(result).toEqual({ id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' });
+      expect(result).toEqual({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      });
       expect(service.findOne).toHaveBeenCalledWith(1);
     });
   });
@@ -104,5 +139,3 @@ describe('UserController', () => {
     });
   });
 });
-
-

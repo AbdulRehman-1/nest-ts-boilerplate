@@ -25,7 +25,12 @@ export class CreateUserTable1708520285550 implements MigrationInterface {
             length: '255',
             isNullable: false,
           },
-          { name: 'email', type: 'varchar', length: '255', isNullable: false },
+          {
+            name: 'email',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
           { name: 'password', type: 'varchar', isNullable: false },
           {
             name: 'resetToken',

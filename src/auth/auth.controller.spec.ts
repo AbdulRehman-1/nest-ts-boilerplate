@@ -4,8 +4,12 @@ import request from 'supertest';
 import AuthController from './auth.controller';
 import AuthService from './auth.service';
 import UsersService from '../users/users.service';
-import { CreateUserDto, CreateUserDto as RegisterUserDto } from '../users/dto';
-import { SignInDto, ResetPasswordDto, ResetPasswordRequestDto } from './dto';
+import { CreateUserDto } from '../users/dto';
+import {
+  SignInDto,
+  ResetPasswordDto,
+  ResetPasswordRequestDto,
+} from './dto';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -45,7 +49,12 @@ describe('AuthController', () => {
   });
 
   it('/POST auth/sign-up', async () => {
-    const registerUserDto: CreateUserDto = { email: 'test@test.com', password: 'password', firstName: "First", lastName: "Last" };
+    const registerUserDto: CreateUserDto = {
+      email: 'test@test.com',
+      password: 'password',
+      firstName: 'First',
+      lastName: 'Last',
+    };
 
     const response = await request(app.getHttpServer())
       .post('/auth/sign-up')
@@ -56,7 +65,10 @@ describe('AuthController', () => {
   });
 
   it('/POST auth/sign-in', async () => {
-    const signInDto: SignInDto = { email: 'test@test.com', password: 'password' };
+    const signInDto: SignInDto = {
+      email: 'test@test.com',
+      password: 'password',
+    };
 
     const response = await request(app.getHttpServer())
       .post('/auth/sign-in')
@@ -67,9 +79,13 @@ describe('AuthController', () => {
   });
 
   it('/POST auth/reset-password', async () => {
-    const resetPasswordRequestDto: ResetPasswordRequestDto = { email: 'test@test.com' };
+    const resetPasswordRequestDto: ResetPasswordRequestDto = {
+      email: 'test@test.com',
+    };
     const result = { data: { message: 'Email sent' } };
-    jest.spyOn(authService, 'resetPasswordRequest').mockImplementation(async () => result);
+    jest
+      .spyOn(authService, 'resetPasswordRequest')
+      .mockImplementation(async () => result);
 
     const response = await request(app.getHttpServer())
       .post('/auth/reset-password')
@@ -80,9 +96,14 @@ describe('AuthController', () => {
   });
 
   it('/POST auth/reset-password/:token', async () => {
-    const resetPasswordDto: ResetPasswordDto = { password: 'newPassword', confirmPassword: 'newPassword' };
+    const resetPasswordDto: ResetPasswordDto = {
+      password: 'newPassword',
+      confirmPassword: 'newPassword',
+    };
     const result = { status: true, message: 'Password changed' };
-    jest.spyOn(authService, 'resetPassword').mockImplementation(async () => result);
+    jest
+      .spyOn(authService, 'resetPassword')
+      .mockImplementation(async () => result);
 
     const response = await request(app.getHttpServer())
       .post('/auth/reset-password/token123')
@@ -92,4 +113,3 @@ describe('AuthController', () => {
     expect(response.body).toEqual(result);
   });
 });
-

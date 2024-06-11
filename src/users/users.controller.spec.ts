@@ -80,7 +80,7 @@ describe('UserController', () => {
   describe('findAll', () => {
     it('should return an array of users', async () => {
       const req = { user: { id: 1 } };
-      const result = await controller.findAll(req, 'Doe', 1, 10);
+      const result = await controller.findAll('Doe', 1, 5);
       expect(result).toEqual([
         {
           id: 1,
@@ -95,12 +95,7 @@ describe('UserController', () => {
           email: 'jane@example.com',
         },
       ]);
-      expect(service.findAllUser).toHaveBeenCalledWith(
-        'Doe',
-        1,
-        10,
-        req.user,
-      );
+      expect(service.findAllUser).toHaveBeenCalledWith('Doe', 1, 5);
     });
   });
 

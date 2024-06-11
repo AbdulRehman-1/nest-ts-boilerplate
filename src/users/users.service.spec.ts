@@ -82,6 +82,7 @@ describe('UsersService', () => {
         password: 'password',
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest
         .spyOn(service, 'findByEmail')
         .mockResolvedValue(createUserDto as any);
@@ -112,7 +113,7 @@ describe('UsersService', () => {
         getManyAndCount: jest.fn().mockResolvedValue([users, 1]),
       });
 
-      const result = await service.findAllUser(null, 1, 10, null);
+      const result = await service.findAllUser(null, 1, 10);
 
       expect(result).toEqual({
         users,

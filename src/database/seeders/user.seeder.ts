@@ -22,7 +22,7 @@ export class UserSeed implements Seeder {
         await this.userRepository.save(data1);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

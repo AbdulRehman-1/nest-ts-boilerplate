@@ -1,1 +1,1 @@
-export { default as User} from './users.entity';
+export { default as User } from './users.entity';

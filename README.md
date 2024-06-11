@@ -1,36 +1,60 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+
+### Features Implemented
+
+- **Authentication Guards**: Implemented `JwtAuthGuard` and `LocalAuthGuard` to secure routes based on JWT and Local strategy.
+- **Migrations and Seeders**: Included database migrations and seeders for easy database setup and population.
+- **Husky**: Integrated Husky to enforce pre-commit and pre-push hooks for linting and formatting checks.
+- **ESLint and Prettier Formatter**: Configured ESLint with TypeScript support and Prettier as a code formatter to ensure code consistency and maintainability.
+
+Feel free to explore and customize the project to suit your specific requirements.
+
+# NestJS BoilerPlate with JWT and Local Strategy
+
+This project demonstrates how to implement authentication in a NestJS application using JWT (JSON Web Token) and Local strategy. The repository includes two auth guards: `JwtAuthGuard` and `LocalAuthGuard`.
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Node.js (>= 12.x)
+- npm (>= 6.x)
+- NestJS CLI (optional, but recommended)
+
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/abdulrehman-11/nest-ts-boilerplate.git
+    cd nest-ts-boilerplate
+    ```
+
+2. Install the dependencies:
+
+    ```bash
+    npm install
+    yarn
+    ```
+
+3. Set up your environment variables. Create a `.env` file in the root directory and add the following variables:
+
+    ```plaintext
+    JWT_SECRET=your_jwt_secret_key
+    JWT_EXPIRATION_TIME=3600s
+    ```
+
+<!-- ## Installation
 
 ```bash
 $ yarn install
-```
+``` -->
 
 ## Running the app
 
@@ -51,23 +75,131 @@ $ yarn run start:prod
 # unit tests
 $ yarn run test
 
+# unit tests single file
+$ "yarn run test <filename.ts>"
+
 # e2e tests
 $ yarn run test:e2e
 
 # test coverage
 $ yarn run test:cov
+
+```
+## Migration
+
+```bash
+# run all migerations
+$ npm run migration:run
+
+# create a new migration
+$ "npm run migration:create --name=user"
+
+## Usage
+In migrations folder 1708520285550-user.ts
+
+```bash
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+
+export class CreateUserTable1708520285550 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+  }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+  }
+}
+
+# revert migration
+$ npm run migration:revert
+
+#drop migration
+$ npm run migration:drop
+```
+```
+## Seed
+
+```bash
+# run all the seeders
+$ yarn run seed
+
 ```
 
-## Support
+## JwtStrategy
+Authenticate the user with jwt strategy
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Usage
 
-## Stay in touch
+```bash
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import UsersService from '../../users/users.service';
+import { JwtPayload } from '../jwt-payload.interface';
+import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  private readonly logger = new Logger(JwtRefreshTokenStrategy.name);
+  constructor(private readonly usersService: UsersService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: process.env.JWT_SECRET || 'secret',
+    });
+    this.logger.warn('JwtStrategy initialized');
+  }
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+  async validate(payload: JwtPayload): Promise<any> {
+    const user = await this.usersService.findByEmail(payload.username);
+    if (user) return user;
+    if (!user) {
+      throw new UnauthorizedException('User not exist');
+    }
+  }
+}
 
-## License
+```
 
-Nest is [MIT licensed](LICENSE).
+## Jwt AuthGuard
+Jwt AuthGuard implements the Jwt Strategy.
+
+```bash
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@Controller('users')
+export default class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll(
+    @Query('searchStr') searchStr: string,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    return this.userService.findAllUser(searchStr, page, pageSize);
+  }
+}
+
+```
+
+## Local AuthGuard
+This AuthGuard implements the Local Strategy for authenticating users from the database.
+
+```bash
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@Controller('users')
+export default class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll(
+    @Query('searchStr') searchStr: string,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    return this.userService.findAllUser(searchStr, page, pageSize);
+  }
+}
+
+```
+

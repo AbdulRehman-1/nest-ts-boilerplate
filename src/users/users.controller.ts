@@ -8,7 +8,6 @@ import {
   Put,
   Query,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import UserService from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
@@ -26,17 +25,11 @@ export default class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(
-    @Req() req: any,
     @Query('searchStr') searchStr: string,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
   ) {
-    return this.userService.findAllUser(
-      searchStr,
-      page,
-      pageSize,
-      req.user,
-    );
+    return this.userService.findAllUser(searchStr, page, pageSize);
   }
 
   @Get(':id')

@@ -24,13 +24,6 @@ export default class AuthController {
 
   @Post('sign-up')
   async signUp(@Body() registerUserDto: RegisterUserDto) {
-
-
-
-
-
-
-    
     return this.usersService.createUser(registerUserDto);
   }
 

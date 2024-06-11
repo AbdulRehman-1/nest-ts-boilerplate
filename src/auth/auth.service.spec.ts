@@ -1,12 +1,12 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import AuthService from "./auth.service";
-import UsersService from "../users/users.service";
-import { JwtService } from "@nestjs/jwt";
-import { SignInDto } from "./dto";
-import { User } from "src/users/entities";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Test, TestingModule } from '@nestjs/testing';
+import AuthService from './auth.service';
+import UsersService from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import { SignInDto } from './dto';
+import { User } from 'src/users/entities';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 
-describe("AuthService", () => {
+describe('AuthService', () => {
   let authService: AuthService;
   let usersService: UsersService;
   let jwtService: JwtService;
@@ -37,76 +37,80 @@ describe("AuthService", () => {
     jwtService = module.get<JwtService>(JwtService);
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(authService).toBeDefined();
   });
 
-  describe("signIn", () => {
-    it("should return a user and access token if credentials are valid", async () => {
+  describe('signIn', () => {
+    it('should return a user and access token if credentials are valid', async () => {
       const signInDto: SignInDto = {
-        email: "abc@gmail.com",
-        password: "12345678",
+        email: 'abc@gmail.com',
+        password: '12345678',
       };
       const user: User = {
         id: 1,
-        email: "abc@gmail.com",
-        firstName: "First",
-        lastName: "Last",
+        email: 'abc@gmail.com',
+        firstName: 'First',
+        lastName: 'Last',
         resetToken: null,
         resetTokenExpiration: null,
         validatePassword: jest.fn().mockResolvedValue(true),
-        password: "12345678",
+        password: '12345678',
       };
-      const accessToken = "testToken";
+      const accessToken = 'testToken';
 
-      jest.spyOn(usersService, "findByEmail").mockResolvedValue(user);
-      jest.spyOn(jwtService, "signAsync").mockResolvedValue(accessToken);
+      jest.spyOn(usersService, 'findByEmail').mockResolvedValue(user);
+      jest.spyOn(jwtService, 'signAsync').mockResolvedValue(accessToken);
 
       const result = await authService.signIn(signInDto);
       expect(result.user).toBeDefined();
       expect(result.access_token).toBeDefined();
       expect(await authService.signIn(signInDto)).toBeDefined();
-      expect(usersService.findByEmail).toHaveBeenCalledWith(signInDto.email);
-      expect(user.validatePassword).toHaveBeenCalledWith(signInDto.password);
+      expect(usersService.findByEmail).toHaveBeenCalledWith(
+        signInDto.email,
+      );
+      expect(user.validatePassword).toHaveBeenCalledWith(
+        signInDto.password,
+      );
       expect(jwtService.signAsync).toHaveBeenCalledWith({
         sub: user.id,
         username: user.email,
       });
     });
 
-    it("should throw NotFoundException if user is not found", async () => {
+    it('should throw NotFoundException if user is not found', async () => {
       const signInDto: SignInDto = {
-        email: "notfound@example.com",
-        password: "password123",
+        email: 'notfound@example.com',
+        password: 'password123',
       };
 
-      jest.spyOn(usersService, "findByEmail").mockResolvedValue(null);
+      jest.spyOn(usersService, 'findByEmail').mockResolvedValue(null);
 
       await expect(authService.signIn(signInDto)).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
 
-    it("should throw UnauthorizedException if password is invalid", async () => {
+    it('should throw UnauthorizedException if password is invalid', async () => {
       const signInDto: SignInDto = {
-        email: "test@example.com",
-        password: "invalidpassword",
+        email: 'test@example.com',
+        password: 'invalidpassword',
       };
       const user: User = {
         id: 1,
-        email: "test@example.com",
-        firstName: "First",
-        lastName: "Last",
+        email: 'test@example.com',
+        firstName: 'First',
+        lastName: 'Last',
         resetToken: null,
         resetTokenExpiration: null,
         validatePassword: jest.fn().mockResolvedValue(false),
-        password: "1password123",
+        password: '1password123',
       };
 
-      jest.spyOn(usersService, "findByEmail").mockResolvedValue(user);
+      jest.spyOn(usersService, 'findByEmail').mockResolvedValue(user);
 
       await expect(authService.signIn(signInDto)).rejects.toThrow(
-        UnauthorizedException
+        UnauthorizedException,
       );
     });
   });

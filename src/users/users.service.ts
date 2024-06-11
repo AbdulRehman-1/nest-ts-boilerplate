@@ -49,7 +49,6 @@ export default class UsersService {
     searchStr: string = null,
     page = 1,
     pageSize = 10,
-    reqUser: User,
   ): Promise<{
     users: User[];
     totalCount: number;
